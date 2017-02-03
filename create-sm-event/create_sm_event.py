@@ -74,7 +74,7 @@ def main(argv):
   """ % (eq_id, lat, lon, mag, eq_year, eq_month, eq_day, eq_hour, eq_minute, 
          eq_second, dep, loc, unix_time)
 
-  with open("event_test.xml", "w") as xml_file:
+  with open("event.xml", "w") as xml_file:
     xml_file.write(xml_data)
 
 if __name__ == "__main__":
