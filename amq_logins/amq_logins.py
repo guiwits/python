@@ -57,8 +57,6 @@ def nagios_check(users):
         sys.exit(2)
 
   sys.exit(0)
-
-  
     
 #
 # main function.
@@ -128,7 +126,6 @@ def main(argv):
     
   if report == True:
     print_report(users, ifn.split('/')[-1]) # only want filename of ifn. Not full path
-# End main()
 
 #
 # Program entry point
