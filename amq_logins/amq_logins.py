@@ -52,7 +52,8 @@ def nagios_check(users):
       total_connects = value['Connects'] - value['Disconnects']
       if total_connects > 3:
         offenders.append( key )
-        status = "User:   %s, Connections: %s, Disconnects: %s" % (key, value['Connects'], value['Disconnects'])
+        status = "User:   %s, Connections: %s, Disconnects: %s" \
+                 % (key, value['Connects'], value['Disconnects'])
         print status
         sys.exit(2)
 
@@ -114,12 +115,12 @@ def main(argv):
         users[data[1]]['Dates'].append( data[0] )
         users[data[1]]['Hosts'].append( data[2] )
         users[data[1]]['Disconnects'] = disconnect_count
-    elif data[3] == "connect":
-      users[data[1]] = {'Name': data[1], 'Command': data[3], 'Hosts': [data[2]],
-                        'Dates': [data[0]], 'Connects': 1, 'Disconnects': 0 }
-    elif data[3] == "disconnect":
-      users[data[1]] = {'Name': data[1], 'Command': data[3], 'Hosts': [data[2]],
-                        'Dates': [data[0]], 'Connects': 0, 'Disconnects': 1 }
+      elif data[3] == "connect":
+        users[data[1]] = {'Name': data[1], 'Command': data[3], 'Hosts': [data[2]],
+                          'Dates': [data[0]], 'Connects': 1, 'Disconnects': 0 }
+      elif data[3] == "disconnect":
+        users[data[1]] = {'Name': data[1], 'Command': data[3], 'Hosts': [data[2]],
+                          'Dates': [data[0]], 'Connects': 0, 'Disconnects': 1 }
 
   if nagios == True:
     nagios_check(users)

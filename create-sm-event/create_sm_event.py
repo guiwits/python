@@ -5,11 +5,14 @@ from random import randint
 
 def main(argv):
   # command line args
+  eid = ''
   mag = ''
   lat = ''
   lon = ''
   dep = ''
   loc = ''
+  fname = ''
+  iteration = ''
   
   # time, date, and id data
   n         = datetime.datetime.now()
@@ -20,18 +23,20 @@ def main(argv):
   eq_minute = n.minute
   eq_second = n.second
   unix_time = time.mktime(n.timetuple())
-  eq_id     = randint(10000000,99999999)
+  eq_id     = randint(10000000,99999999) # needed if we don't want to use a command line quake id
 
   try:
-    opts, args = getopt.getopt(argv,"hm:d:l:o:s:",
-            ["mag=","dep=","lat=","lon=","location="])
+    opts, args = getopt.getopt(argv,"hm:e:d:l:o:s:f:i:",
+                 ["eid=", "mag=","dep=","lat=","lon=","location=", "filename=", "iteration="])
   except getopt.GetoptError:
-    print 'create_event.py -m <mag> -l <lat> -o <lon> -d <depth> -s <loc>'
+    print 'create_event.py -e <eid> -m <mag> -l <lat> -o <lon> -d <depth> -s <loc> -f <filename> -i <iteration>'
     sys.exit(2)
   for opt, arg in opts:
     if opt == '-h':
-      print 'create_event.py -m <mag> -l <lat> -o <lon> -d <depth> -s <loc>'
+      print 'create_event.py -e <eid> -m <mag> -l <lat> -o <lon> -d <depth> -s <loc> -f <filename> -i <iteration>'
       sys.exit()
+    elif opt in ("-e", "--eid"):
+      eid = arg
     elif opt in ("-m", "--mag"):
       mag = arg
     elif opt in ("-d", "--dep"):
@@ -42,16 +47,20 @@ def main(argv):
       lon = arg
     elif opt in ("-s", "--location"):
       loc = arg
+    elif opt in ("-f", "--filename"):
+      fname = arg
+    elif opt in ("-i", "--iteration"):
+      iteration = arg
 
   xml_data = """
   <?xml version="1.0" encoding="US-ASCII" standalone="yes"?>
   <!DOCTYPE earthquake [
-  <!ELEMENT  earthquake EMPTY>
+  <!ELEMENT earthquake EMPTY>
   <!ATTLIST earthquake
-    id 		ID	#REQUIRED
-    lat		CDATA	#REQUIRED
-    lon		CDATA	#REQUIRED
-    mag		CDATA	#REQUIRED
+    id          ID      #REQUIRED
+    lat         CDATA   #REQUIRED
+    lon         CDATA   #REQUIRED
+    mag         CDATA   #REQUIRED
     year        CDATA   #REQUIRED
     month       CDATA   #REQUIRED
     day         CDATA   #REQUIRED
@@ -59,22 +68,26 @@ def main(argv):
     minute      CDATA   #REQUIRED
     second      CDATA   #REQUIRED
     timezone    CDATA   #REQUIRED
-    depth       CDATA	#REQUIRED
-    type	CDATA	#REQUIRED
-    locstring	CDATA	#REQUIRED
-    pga		CDATA   #REQUIRED
-    pgv		CDATA   #REQUIRED
-    sp03	CDATA   #REQUIRED
-    sp10	CDATA   #REQUIRED
-    sp30	CDATA   #REQUIRED
-    created	CDATA	#REQUIRED
+    depth       CDATA   #REQUIRED
+    type        CDATA   #REQUIRED
+    locstring   CDATA   #REQUIRED
+    pga         CDATA   #REQUIRED
+    pgv         CDATA   #REQUIRED
+    sp03        CDATA   #REQUIRED
+    sp10        CDATA   #REQUIRED
+    sp30        CDATA   #REQUIRED
+    created     CDATA   #REQUIRED
   >
   ]>
   <earthquake id="%s" lat="%s" lon="%s" mag="%s" year="%s" month="%s" day="%s" hour="%s" minute="%s" second="%s" timezone="GMT" depth="%s" type="ALL" locstring="%s" created="%s" />
-  """ % (eq_id, lat, lon, mag, eq_year, eq_month, eq_day, eq_hour, eq_minute, 
-         eq_second, dep, loc, unix_time)
+  """ % (eid, lat, lon, mag, eq_year, eq_month, eq_day, eq_hour, eq_minute, eq_second, dep, loc, unix_time)
 
-  with open("event.xml", "w") as xml_file:
+  if fname == '' or iteration == '':
+    print 'Filename and/or Iteration cannot be empty. Please use quotes on multi work string with spaces.'
+    sys.exit(2)
+
+  filename = fname + '_' + iteration + '.xml'
+  with open(filename, "w") as xml_file:
     xml_file.write(xml_data)
 
 if __name__ == "__main__":
