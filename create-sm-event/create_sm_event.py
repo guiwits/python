@@ -83,7 +83,7 @@ def main(argv):
   """ % (eid, lat, lon, mag, eq_year, eq_month, eq_day, eq_hour, eq_minute, eq_second, dep, loc, unix_time)
 
   if fname == '' or iteration == '':
-    print 'Filename and/or Iteration cannot be empty. Please use quotes on multi work string with spaces.'
+    print 'Filename and/or Iteration cannot be empty. Please use quotes on multi word string with spaces.'
     sys.exit(2)
 
   filename = fname + '_' + iteration + '.xml'
